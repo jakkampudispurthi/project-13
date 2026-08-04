@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """diagnose.py — run judge.py's scoring logic per-case, with reasons shown."""
 import json
 import os

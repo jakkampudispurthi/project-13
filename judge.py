@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """judge.py — a minimal LLM-as-a-judge groundedness evaluator.
 
 This is the gate ci.yml calls directly (`python evals/judge.py ...`). It scores whether each

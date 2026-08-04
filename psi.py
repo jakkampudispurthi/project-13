@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """psi.py — Population Stability Index, the workhorse drift metric.
 
 PSI compares a *reference* distribution (what production looked like when the

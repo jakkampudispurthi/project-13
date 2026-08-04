@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """rag_service.py — the school help-desk RAG bot.
 
 Simple, fixed-corpus retrieval: the policy doc is small enough that we do

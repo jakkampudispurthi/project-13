@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """error_budget.py — turn an SLO into an error budget and tell on-call the truth.
 
 An SLO is a promise: "99.5% of answers will be grounded." The error budget is
