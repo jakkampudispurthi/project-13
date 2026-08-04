@@ -51,4 +51,4 @@ jobs:
           MODEL_ID: ${{ vars.MODEL_ID }}            # pin the model ID; never "latest"
           OPENAI_BASE_URL: ${{ vars.OPENAI_BASE_URL }}  # any OpenAI-compatible /v1 URL
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} # that endpoint's key (a secret)
-        run: python evals/judge.py evals/cases.jsonl --min-groundedness 0.75
+        run: python judge.py evals/cases.jsonl --min-groundedness 0.75
