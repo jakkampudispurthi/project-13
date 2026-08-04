@@ -25,10 +25,10 @@ jobs:
         run: ruff check .
       - name: Unit tests
         run: pytest tests/unit -q
-      - - name: Secret scan
+      - name: Secret scan
         uses: gitleaks/gitleaks-action@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # AI-written code leaks keys too
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # --- The eval gate: slow, paid, nondeterministic. Runs LAST. ---
       # Gate on a GROUNDEDNESS SCORE over a fixed eval set, not on a vibe.
       # A regression below threshold fails the build like any other test.
