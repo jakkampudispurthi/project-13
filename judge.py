@@ -32,10 +32,14 @@ from openai import OpenAI
 
 RUBRIC = """You are a strict groundedness judge. Given CONTEXT and an ANSWER,
 return JSON {"grounded": true|false, "reason": "<one sentence>"}.
-Rule: grounded=true ONLY if every factual claim in ANSWER is supported by CONTEXT.
-A fluent answer that adds facts not in CONTEXT is grounded=false (a hallucination).
-Do not reward confidence. Do not reward style. Support only.
-Return ONLY the JSON object, nothing else."""
+Rule: grounded=true if every factual claim in ANSWER is supported by CONTEXT,
+INCLUDING when the ANSWER paraphrases or rewords CONTEXT using different words
+for the same meaning (e.g. "cannot be based on email alone" paraphrasing
+"never based on a request via chat or email alone" is grounded=true).
+A fluent answer that introduces a NEW fact, instruction, or claim not present
+in CONTEXT, in any wording, is grounded=false (a hallucination).
+Do not reward confidence. Do not reward style. Judge meaning, not exact
+wording. Return ONLY the JSON object, nothing else."""
 
 
 def make_client():
@@ -61,7 +65,8 @@ def score_case(client, model_id, context, answer):
 
 
 def run(eval_file, client, model_id):
-    cases = [json.loads(line) for line in open(eval_file) if line.strip()]
+    with open(eval_file) as fh:
+        cases = [json.loads(line) for line in fh if line.strip()]
     if not cases:
         raise SystemExit(f"no eval cases found in {eval_file}")
     grounded = 0

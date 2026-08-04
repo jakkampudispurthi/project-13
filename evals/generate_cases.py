@@ -8,7 +8,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-from rag_service import answer  # noqa: E402
+from rag_service import answer
 
 
 def main():

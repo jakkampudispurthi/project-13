@@ -18,8 +18,8 @@ Usage:
 where each file is one numeric value per line (e.g. daily request latencies,
 or a feature like prompt length). No third-party deps.
 """
-import sys
 import math
+import sys
 
 
 def psi(reference, current, buckets=10):
@@ -54,7 +54,9 @@ def verdict(value):
 if __name__ == "__main__":
     if len(sys.argv) != 3:
         sys.exit("usage: python psi.py reference.txt current.txt")
-    ref = [float(l) for l in open(sys.argv[1]) if l.strip()]
-    cur = [float(l) for l in open(sys.argv[2]) if l.strip()]
+    with open(sys.argv[1]) as fh:
+        ref = [float(l) for l in fh if l.strip()]
+    with open(sys.argv[2]) as fh:
+        cur = [float(l) for l in fh if l.strip()]
     value = psi(ref, cur)
     print(f"PSI = {value:.4f}  ->  {verdict(value)}")
