@@ -1,0 +1,54 @@
+# .github/workflows/ci.yml
+# A CI/CD pipeline for an AI application. The order is the lesson:
+# cheap deterministic gates run FIRST and fail FAST; the slow, paid,
+# nondeterministic LLM eval gate runs LAST and only on PRs that
+# already passed everything a human could have caught for free.
+name: ai-app-ci
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read          # least privilege: this job cannot push to main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      # --- Cheap deterministic gates (the testing pyramid's wide base) ---
+      - name: Lint (deterministic)
+        run: ruff check .
+
+      - name: Unit tests
+        run: pytest tests/unit -q
+
+      - name: Secret scan
+        run: gitleaks detect --no-banner    # AI-written code leaks keys too
+
+      # --- The eval gate: slow, paid, nondeterministic. Runs LAST. ---
+      # Gate on a GROUNDEDNESS SCORE over a fixed eval set, not on a vibe.
+      # A regression below threshold fails the build like any other test.
+      #
+      # The judge calls an OpenAI-COMPATIBLE endpoint -- NOT one hardcoded vendor.
+      # OPENAI_BASE_URL picks the provider (any vendor's /v1, OpenAI's default, or
+      # a self-hosted vLLM URL), OPENAI_API_KEY is that provider's key. A hosted
+      # GitHub runner CANNOT reach Ollama on your box, so in CI this MUST be a
+      # CLOUD endpoint (Appendix A.12.5). Set these in
+      # Settings -> Secrets and variables -> Actions: OPENAI_API_KEY as a SECRET,
+      # MODEL_ID and OPENAI_BASE_URL as VARIABLES.
+      - name: LLM eval gate (groundedness >= 0.85)
+        env:
+          MODEL_ID: ${{ vars.MODEL_ID }}            # pin the model ID; never "latest"
+          OPENAI_BASE_URL: ${{ vars.OPENAI_BASE_URL }}  # any OpenAI-compatible /v1 URL
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} # that endpoint's key (a secret)
+        run: python evals/judge.py evals/cases.jsonl --min-groundedness 0.85

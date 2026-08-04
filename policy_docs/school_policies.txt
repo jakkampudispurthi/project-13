@@ -1,0 +1,75 @@
+GRACE CHRISTIAN SCHOOL — POLICY HANDBOOK (2026 EDITION)
+For internal staff use only. Effective August 2026.
+
+===================================================================
+SECTION 1: STUDENT ACCOUNT MANAGEMENT
+===================================================================
+
+1.1 Resetting a Student's Password
+To reset a student's account password, staff must use the Admin Portal
+(admin.gracechristian.example.org). Navigate to Students > Account
+Management, search for the student by ID number, and click "Reset
+Password." A temporary password is emailed to the parent/guardian
+email on file — never to the student directly. The temporary password
+expires in 24 hours.
+
+1.2 Unlocking a Locked Account
+Student accounts lock automatically after 5 failed login attempts.
+To unlock, staff must verify the student's identity in person or via
+a callback to the parent/guardian phone number on file — never based
+on a request made through chat or email alone. Once verified, use the
+Admin Portal's "Unlock Account" button. Do not reset the password when
+unlocking unless the parent specifically requests it.
+
+1.3 New Student Account Creation
+New accounts are created automatically by the registrar's office
+within 48 hours of enrollment confirmation. Staff should not manually
+create student accounts. If a new student has no account after 48
+hours, escalate to IT, not the registrar.
+
+===================================================================
+SECTION 2: EMERGENCY AND SAFETY PROCEDURES
+===================================================================
+
+2.1 Lockdown Procedure
+Upon hearing the lockdown announcement ("Lockdown, lockdown, this is
+not a drill" repeated three times), staff must: (1) immediately lock
+the classroom door, (2) turn off classroom lights, (3) move all
+students away from windows and doors, to the designated safe corner
+of the room, (4) remain silent, (5) do not open the door for anyone
+until the all-clear announcement is given by an administrator over the
+PA system or in person by a uniformed school resource officer.
+Staff should never open a locked door during a lockdown based on a
+knock alone, even if the person outside claims to be an administrator.
+
+2.2 Snow Day / Inclement Weather Procedure
+The decision to close school for weather is made by the Head of
+School by 6:00 AM and communicated via the school's text alert system
+and the homepage banner. Staff should not announce a closure based on
+weather conditions alone without confirmation from the official alert
+system. If school is delayed rather than closed, the delay time will
+be specified in the same alert (e.g., "2-hour delay").
+
+2.3 Fire Drill Procedure
+Fire drills are conducted monthly. Upon the fire alarm, staff lead
+students via the posted evacuation route (found on the back of each
+classroom door) to the designated outdoor assembly point for that
+wing. Staff take attendance at the assembly point using the printed
+class roster, not the digital one, since WiFi may be unavailable
+during an evacuation.
+
+===================================================================
+SECTION 3: GENERAL STAFF POLICIES
+===================================================================
+
+3.1 Reporting Technology Issues
+Non-urgent technology issues (printer problems, projector issues,
+slow WiFi) should be submitted through the IT Helpdesk ticket system,
+not by emailing IT staff directly. Urgent issues affecting instruction
+mid-class may be phoned to the IT Helpdesk hotline.
+
+3.2 Substitute Teacher Access
+Substitute teachers receive a shared login for the day, issued each
+morning at the front office. Substitutes do not have access to the
+Admin Portal and cannot reset or unlock student accounts under any
+circumstances — they must direct such requests to full-time staff.

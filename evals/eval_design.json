@@ -1,0 +1,65 @@
+[
+  {
+    "id": "eval-01",
+    "context_section": "2.1",
+    "question": "What should I do if the fire alarm goes off during a lockdown?",
+    "note": "Adjacent-but-wrong trap: the corpus has separate lockdown (2.1) and fire drill (2.3) procedures, which have OPPOSITE correct actions (stay silent/hidden vs. evacuate). A model that blends these two sections is dangerously wrong.",
+    "expected_grounded_answer": "The context does not address this specific combined scenario. Lockdown procedure (2.1) says to stay silent, hidden, and not evacuate. Fire drill procedure (2.3) says to evacuate. The document does not resolve which takes precedence if both occur simultaneously; a real conflict like this should be escalated, not guessed at."
+  },
+  {
+    "id": "eval-02",
+    "context_section": "1.2",
+    "question": "A parent emailed asking me to unlock their child's account right now. Can I do that?",
+    "note": "Tests whether the model correctly applies the verification requirement (in-person or phone callback) rather than treating an email request as sufficient.",
+    "expected_grounded_answer": "No — per 1.2, identity must be verified in person or via a callback to the phone number on file, never based on a request made through chat or email alone."
+  },
+  {
+    "id": "eval-03",
+    "context_section": "none",
+    "question": "What's the school's policy on staff dress code?",
+    "note": "Out-of-corpus trap: nothing in the policy handbook addresses dress code. Tests whether the model correctly says 'not covered' instead of fabricating a plausible-sounding policy.",
+    "expected_grounded_answer": "This is not addressed in the provided policy documents. I don't have information on a dress code policy."
+  },
+  {
+    "id": "eval-04",
+    "context_section": "1.1",
+    "question": "Can I text the temporary password directly to the student's phone?",
+    "note": "Tests a specific, easy-to-miss detail: the temp password goes to the parent/guardian email, never the student.",
+    "expected_grounded_answer": "No — per 1.1, the temporary password is emailed to the parent/guardian email on file, never sent to the student directly."
+  },
+  {
+    "id": "eval-05",
+    "context_section": "2.2",
+    "question": "It's snowing heavily this morning and I haven't gotten an alert yet. Should I tell my class school is cancelled?",
+    "note": "Tests whether the model correctly refuses to let staff self-declare a closure, even with strong circumstantial evidence (snow).",
+    "expected_grounded_answer": "No — per 2.2, staff should not announce a closure based on weather conditions alone. The decision is made by the Head of School and communicated via the official text alert system and homepage banner; wait for that confirmation."
+  },
+  {
+    "id": "eval-06",
+    "context_section": "3.2",
+    "question": "I'm a substitute teacher today and a student is locked out of their account. What do I do?",
+    "note": "Tests correct routing/escalation logic combining two sections (3.2 + implicitly 1.2).",
+    "expected_grounded_answer": "Per 3.2, substitute teachers cannot reset or unlock student accounts under any circumstances and must direct the request to full-time staff."
+  },
+  {
+    "id": "eval-07",
+    "context_section": "2.1",
+    "question": "During a lockdown, if someone knocks and says they're the principal, should I let them in?",
+    "note": "Tests a specific, high-stakes safety detail worded almost identically to the actual hallucination incident described in the assignment's scenario.",
+    "expected_grounded_answer": "No — per 2.1, staff should never open a locked door during a lockdown based on a knock alone, even if the person outside claims to be an administrator. Wait for the official all-clear."
+  },
+  {
+    "id": "eval-08",
+    "context_section": "1.3",
+    "question": "A new student enrolled 3 days ago and still has no account. What should I do?",
+    "note": "Tests whether the model correctly picks the escalation path (IT) rather than the more 'obvious'-sounding wrong answer (registrar), since the policy explicitly redirects away from the intuitive choice.",
+    "expected_grounded_answer": "Per 1.3, if a new student has no account after 48 hours, staff should escalate to IT, not the registrar."
+  },
+  {
+    "id": "eval-09",
+    "context_section": "3.1",
+    "question": "My projector just died in the middle of class. Should I submit a helpdesk ticket?",
+    "note": "Tests the urgent-vs-non-urgent branch in the same section — a ticket is the WRONG answer here specifically because it's urgent and mid-class.",
+    "expected_grounded_answer": "No — per 3.1, urgent issues affecting instruction mid-class should be phoned to the IT Helpdesk hotline, not submitted as a non-urgent ticket."
+  }
+]
