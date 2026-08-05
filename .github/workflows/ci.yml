@@ -4,16 +4,13 @@
 # nondeterministic LLM eval gate runs LAST and only on PRs that
 # already passed everything a human could have caught for free.
 name: ai-app-ci
-
 on:
   pull_request:
     branches: [main]
   push:
     branches: [main]
-
 permissions:
   contents: read          # least privilege: this job cannot push to main
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -21,23 +18,26 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
-
       - name: Install
         run: pip install -r requirements.txt
-
       # --- Cheap deterministic gates (the testing pyramid's wide base) ---
       - name: Lint (deterministic)
         run: ruff check .
-
       - name: Unit tests
         run: pytest tests/unit -q
-
       - name: Secret scan
-        run: gitleaks detect --no-banner    # AI-written code leaks keys too
-
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # --- The eval gate: slow, paid, nondeterministic. Runs LAST. ---
       # Gate on a GROUNDEDNESS SCORE over a fixed eval set, not on a vibe.
       # A regression below threshold fails the build like any other test.
+      #
+      # Threshold set to 0.75, not 0.85, based on measured judge variance:
+      # across repeated runs on this 9-case eval set, the healthy service
+      # scored as low as 0.778 purely from judge noise (see REPORT.docx).
+      # 0.75 preserves a wide margin below healthy runs while still catching
+      # real regressions (measured at 0.333 on a deliberately broken prompt).
       #
       # The judge calls an OpenAI-COMPATIBLE endpoint -- NOT one hardcoded vendor.
       # OPENAI_BASE_URL picks the provider (any vendor's /v1, OpenAI's default, or
@@ -46,9 +46,9 @@ jobs:
       # CLOUD endpoint (Appendix A.12.5). Set these in
       # Settings -> Secrets and variables -> Actions: OPENAI_API_KEY as a SECRET,
       # MODEL_ID and OPENAI_BASE_URL as VARIABLES.
-      - name: LLM eval gate (groundedness >= 0.85)
+      - name: LLM eval gate (groundedness >= 0.75)
         env:
           MODEL_ID: ${{ vars.MODEL_ID }}            # pin the model ID; never "latest"
           OPENAI_BASE_URL: ${{ vars.OPENAI_BASE_URL }}  # any OpenAI-compatible /v1 URL
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} # that endpoint's key (a secret)
-        run: python evals/judge.py evals/cases.jsonl --min-groundedness 0.85
+        run: python judge.py evals/cases.jsonl --min-groundedness 0.75

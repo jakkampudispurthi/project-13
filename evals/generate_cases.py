@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """generate_cases.py — runs each question in eval_design.json through the
 real RAG service, capturing {context, answer} pairs in the exact JSONL shape
 judge.py expects. Run this whenever the service or corpus changes, before
@@ -8,7 +7,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-from rag_service import answer  # noqa: E402
+from rag_service import answer
 
 
 def main():

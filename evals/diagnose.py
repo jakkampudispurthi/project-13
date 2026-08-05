@@ -1,15 +1,15 @@
-#!/usr/bin/env python3
 """diagnose.py — run judge.py's scoring logic per-case, with reasons shown."""
 import json
 import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from judge import make_client, score_case  # noqa: E402
+from judge import make_client, score_case
 
 MODEL_ID = os.environ.get("MODEL_ID", "gpt-5.4-mini")
 
-cases = [json.loads(line) for line in open("evals/cases.jsonl") if line.strip()]
+with open("evals/cases.jsonl") as fh:
+    cases = [json.loads(line) for line in fh if line.strip()]
 client = make_client()
 
 for c in cases:
