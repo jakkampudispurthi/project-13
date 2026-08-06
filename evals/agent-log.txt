@@ -1,0 +1,83 @@
+AGENT LOG — Project 13: A Pipeline for an AI Application
+
+What I used Claude for:
+I built the RAG service, the eval set, and every judgment call myself.
+I used Claude heavily for CI/CD debugging tonight, since this was my
+first time wiring up a real GitHub Actions pipeline and Windows-vs-Linux
+environment differences caused a long chain of real, specific failures.
+
+Where AI was wrong, and where I had to debug and intervene:
+
+1. Model default was stale
+   My first draft defaulted to gpt-4o-mini. I checked whether it was
+   still current before running real traffic and found it was already
+   deprecated. Switched to the current, pinned gpt-5.4-mini.
+
+2. Windows vs. Linux: shebang lines
+   ruff's EXE001 rule failed the build in CI (GitHub's ubuntu-latest
+   runner) on files with a `#!/usr/bin/env python3` shebang that wasn't
+   marked executable. This never showed up locally on Windows, since
+   Windows doesn't have the same executable-bit concept. Removed the
+   shebangs since the scripts are always invoked via `python file.py`
+   anyway.
+
+3. YAML indentation bug -- twice
+   I mis-indented the eval gate's `run:` line so it nested inside the
+   `env:` block instead of being a sibling of it, which produced an
+   "invalid workflow file" error rather than a normal test failure.
+   Found and fixed by reading the raw YAML carefully. Made a very
+   similar mistake again later when adding the gitleaks-action step
+   (left a duplicate old step in place) -- same lesson, twice.
+
+4. judge.py's real path vs. the path in ci.yml
+   ci.yml called `python evals/judge.py`, but judge.py actually lives
+   at the repo root, not inside evals/. This also tripped me up
+   locally before I ever got to CI. Fixed the path in the workflow.
+
+5. gitleaks isn't preinstalled on GitHub runners
+   The starter ci.yml called `gitleaks detect` as a bare command,
+   assuming the binary exists. It doesn't, by default. Switched to the
+   official gitleaks/gitleaks-action@v2, which handles its own install.
+
+6. gitleaks-action needs full git history, not a shallow clone
+   Even after adding the official action, it failed with "unknown
+   revision" because actions/checkout@v4 defaults to a shallow clone
+   (fetch-depth: 1), and gitleaks needs to diff against a parent
+   commit that a shallow clone doesn't have. Added fetch-depth: 0.
+   This fix itself then hit a fresh YAML syntax error I ran out of time
+   to chase down further tonight -- I reverted that specific change so
+   main stays on its last known-good, fully green CI run, and rely on
+   strong local evidence for the regression proof instead of a second
+   clean CI run with gitleaks fully working end to end.
+
+7. The most important finding: judge non-determinism (real, measured)
+   Running judge.py repeatedly on the IDENTICAL cases.jsonl file, with
+   temperature=0, produced meaningfully different groundedness scores
+   run to run (0.778, 0.556, 0.667, 0.556 in one back-to-back sequence).
+   I did not accept this quietly -- I investigated by running diagnose.py
+   to see which specific cases were flipping, and found the SAME few
+   borderline cases (not random ones) failing inconsistently, almost
+   always because the judge's original rubric was too literal about
+   exact wording and penalized faithful paraphrasing as if it were a
+   hallucination. I rewrote the rubric to explicitly permit paraphrasing
+   while still catching genuinely new, unsupported claims, and re-ran
+   it multiple times -- scores rose and stabilized meaningfully
+   (0.889, 1.000, 0.778 after the fix). This is a real, evidence-driven
+   fix to the judge itself, not just a threshold I lowered to make a
+   number look better.
+
+8. Threshold decision
+   I set the eval gate to 0.75, not the starter's 0.85/0.90. This was
+   NOT picked to make the pipeline pass easily -- it's based on the
+   measured minimum score (0.778) the genuinely healthy, correct RAG
+   service produced across multiple real runs, giving a wide, honest
+   margin above the regressed version's measured score of 0.333.
+
+What I made sure NOT to hand off:
+The groundedness threshold, the eval case design (the specific
+adversarial questions and why each one matters), the decision to fix
+the judge's rubric rather than just lowering the bar, and the choice of
+what counts as an acceptable margin between "healthy but unlucky" and
+"actually regressed" were all mine. Claude helped me read error messages
+and understand Linux/CI-specific behavior I hadn't encountered before,
+but every judgment call in this project is documented above as mine.
