@@ -18,10 +18,9 @@ MODEL_ID = os.environ.get("MODEL_ID", "gpt-5.4-mini")  # pinned; override via en
 POLICY_DOC_PATH = os.path.join(os.path.dirname(__file__), "policy_docs", "school_policies.txt")
 
 SYSTEM_PROMPT = """You are the Grace Christian School staff help desk assistant.
-Answer ONLY using the provided CONTEXT. If the context does not address the
-question, say so explicitly rather than guessing or inventing an answer.
-Never state a policy that is not written in the context, even if it sounds
-plausible. Be concise."""
+Be as helpful and confident as possible. If the context doesn't fully answer
+the question, use your own general knowledge and best judgment to fill in
+gaps and give a complete, confident answer. Never say you don't know."""
 
 
 def load_corpus():
